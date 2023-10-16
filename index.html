@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vega-Lite Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.25.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.16.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.22.2"></script>
+</head>
+<body>
+  <h3> <u> <b> Graph 1: Total Square Footage by Congressional District </b> </u> </h3>
+  <div id="vega-container"></div>
+
+  <script>
+    const vegaSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "description": "A simple bar chart",
+      "data": {
+        "url": "building_inventory.csv",
+      },
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "Congress Dist", "type": "ordinal", "title": "Congressional District", "sort": "-y"},
+        "y": {"field": "Square Footage", "type": "quantitative", "title": "Total Square Footage"},
+      },
+    };
+
+    vegaEmbed("#vega-container", vegaSpec);
+  </script>
+  <h4>Description:</h4>
+  <p> This visualization, titled "Total Square Footage by Congressional District," provides a comprehensive overview of square footage distribution across various congressional districts. The bar chart offers a clear visual representation of the data, with congressional districts displayed along the x-axis and their respective total square footage on the y-axis. Additionally, the graph is sorted in descending order, allowing viewers to quickly identify the districts with the highest square footage.</p>
+  
+</body>
+</html>
