@@ -1,33 +1,131 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Vega-Lite Example</title>
-  <script src="https://cdn.jsdelivr.net/npm/vega@5.25.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.16.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.22.2"></script>
-</head>
-<body>
-  <h3> <u> <b> Graph 1: Total Square Footage by Congressional District </b> </u> </h3>
-  <div id="vega-container"></div>
+    <head>
+        <title> Assignment 3</title>
+        <style>
+          .graph-container {
+              margin: 0 auto; /* Center the graph container */
+              text-align: center; /* Center the content within the container */
+          }
+      </style>
+        <script src="https://cdn.jsdelivr.net/npm/vega@5.25.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.16.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.22.2"></script>
+    </head>
+    <body>
+      <h1>Assignment 3 - Interactive Visualizations Using Vegalite</h1></h2>
+        <h3> <u> <b> Graph 1: Total Square Footage by Congressional District </b> </u> </h3>
+        <br>
+        <div class="graph-container">
+        <div id="vega-container1"></div>
+        <script>
+            const vegaSpec = {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Total Square Footage by Congressional District ",
+              "title": "Total Square Footage as a function of Congressional District with Tooltip",
+              "width": 600,
+              "height": 370,
+              "data": {
+                "url": "building_inventory.csv", 
+              },
+              "mark": "bar",
+              "encoding": {
+                "x": {
+                  "field": "Congress Dist",
+                  "type": "ordinal",
+                  "title": "Congressional District",
+                  "sort": "-y" 
+                },
+                "y": {
+                  "field": "Square Footage",
+                  "type": "quantitative",
+                  "title": "Total Square Footage"
+                },
 
-  <script>
-    const vegaSpec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "description": "A simple bar chart",
-      "data": {
-        "url": "building_inventory.csv",
-      },
-      "mark": "bar",
-      "encoding": {
-        "x": {"field": "Congress Dist", "type": "ordinal", "title": "Congressional District", "sort": "-y"},
-        "y": {"field": "Square Footage", "type": "quantitative", "title": "Total Square Footage"},
-      },
-    };
+                "tooltip": [
+                    {"field":"Agency Name", "title":"Building Name", "type":"nominal"},
+                    {"field":"Year Acquired", "title":"Year Acquired", "type":"nominal"},
+                    {"field": "Square Footage", "title": "Total Square Footage", "type": "quantitative"}
+                ]
+              },
+             
+            };
+            vegaEmbed("#vega-container1", vegaSpec);
+        </script>
+        </div>
+        <h4>Description:</h4>
+        <p> This visualization, titled "Total Square Footage by Congressional District," provides a comprehensive overview of square footage distribution across various congressional districts. The bar chart offers a clear visual representation of the data, with congressional districts displayed along the x-axis and their respective total square footage on the y-axis. Additionally, the graph is sorted in descending order, allowing viewers to quickly identify the districts with the highest square footage.</p>
+        <p> This visualization goes a step further by enhancing the user experience within each bar of the graph. As you hover over any district, detailed tooltips reveal additional information. These tooltips include the building name, the year of acquisition, and the exact total square footage for that specific year of a particular building. This interactive feature grants users a deeper understanding of the data, making it easier to explore and analyze square footage trends across congressional districts.</p>
+        
 
-    vegaEmbed("#vega-container", vegaSpec);
-  </script>
-  <h4>Description:</h4>
-  <p> This visualization, titled "Total Square Footage by Congressional District," provides a comprehensive overview of square footage distribution across various congressional districts. The bar chart offers a clear visual representation of the data, with congressional districts displayed along the x-axis and their respective total square footage on the y-axis. Additionally, the graph is sorted in descending order, allowing viewers to quickly identify the districts with the highest square footage.</p>
-  
-</body>
+        <br> <br> <br>
+        <h3><b><u> Graph 2: Building Utility Distribution by Count </b> </u> </h3>
+        <br>
+        <div class="graph-container">
+        <div id="vega-container2"></div>
+        <script>
+          const vegaSpec2 = {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Building Utility Distribution by Count",
+              "title": "Building Utility Distribution by Count (Bar Chart with Interactive Count)",
+              "width": 600,
+              "height": 370,
+              "data": {
+                  "url": "building_inventory.csv" 
+              },
+              "layer": [{
+                  "params":[{
+                      "name":"brush",
+                      "select":{"type":"interval", "encoding":["x"]}
+                  }],
+                  "mark":"bar",
+                  "encoding": {
+                      "x": {
+                          "field": "Usage Description",
+                          "type": "nominal",
+                          "title": "Building Utility"
+                      },
+                      "y": {
+                          "aggregate": "count",
+                          "type": "quantitative",
+                          "title": "Count"
+                      },
+                      "tooltip": [
+                          {"field": "Usage Description", "title": "Building Utility"},
+                          {"aggregate": "count", "field": "Usage Description", "title": "Total Count", "type": "quantitative"}
+                      ],
+                      "opacity": {
+                          "condition":{
+                              "param": "brush", "value": 1
+                          },
+                          "value": 0.7
+                      }
+                  }    
+              },
+              {
+                  "transform": [{
+                      "filter": {"param":"brush"}
+                  }],
+                  "mark":"rule",
+                  "encoding":{
+                      "y":{
+                          "aggregate": "count",
+                          "field":"Usage Description",
+                          "type":"quantitative"
+                      },
+                      "color":{"value":"firebrick"},
+                      "size":{"value":3},
+                      
+                  }
+              }]
+          };
+          vegaEmbed("#vega-container2", vegaSpec2);
+      </script>
+      </div>  
+      <h4>Description:</h4>
+      <p> This interactive bar chart, titled "Building Utility Distribution by Count" offers a comprehensive view of the distribution of building utilities within a dataset. The chart visualizes the count of different building utilities on the x-axis, showcasing the variety of utilities available, and the count of buildings employing each utility on the y-axis.</p>
+      <p> A distinguishing feature of this graph is its interactivity. Users can select specific utility categories using the interactive brush tool, which dynamically updates the visualization to display the count of buildings for the selected utilities. Clicking on the graph provides an interactive rectangular interface that can be adjusted by scrolling the mouse wheel. As the rectangle expands or contracts, the red bar representing the count of usages adjusts accordingly, providing users with a dynamic and customizable exploration of the data. This unique feature allows for precise and interactive analysis of building utility distribution.</p>
+      <p> Moreover, informative tooltips are provided to enhance the user experience. Hovering over any bar reveals details, including the name of the building utility and the total count. This enables users to gain deeper insights into the distribution of building utilities and make data-driven decisions. The graph is a powerful tool for exploring the distribution of building utilities and understanding their prevalence in the dataset, making it useful for various analytical purposes.</p>
+        
+    </body>
 </html>
